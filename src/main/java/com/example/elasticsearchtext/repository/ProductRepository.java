@@ -3,23 +3,18 @@ package com.example.elasticsearchtext.repository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.example.elasticsearchtext.Product;
+import com.example.elasticsearchtext.TextAnalyzer;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.indices.AnalyzeRequest;
-import co.elastic.clients.elasticsearch.indices.AnalyzeRequest.Builder;
 import co.elastic.clients.elasticsearch.indices.AnalyzeResponse;
-import co.elastic.clients.elasticsearch.indices.analyze.AnalyzeDetail;
-import co.elastic.clients.elasticsearch.indices.analyze.AnalyzeToken;
-import co.elastic.clients.util.ObjectBuilder;
 
 
 @Repository
@@ -28,6 +23,9 @@ public class ProductRepository {
 	@Autowired
 	GenericRepository repo;
 	@Autowired ElasticsearchClient esClient;
+	
+	@Autowired
+	TextAnalyzer analyze ;
 	
 	String indexName = "products";
 
@@ -48,9 +46,12 @@ public class ProductRepository {
 			    ),
 			    Product.class      
 			);
-	     System.out.println("Output of the analyzer: =====" + 
-			buildAnalyzer("The fox3 jumps bla bla").tokens().get(0).token());
-    // System.out.println("------------------" + response.hits().hits().toString());
+	   
+	    
+	    
+    
+   AnalyzeResponse res = analyze.buildAnalyzer("The lazy foz bal bla bla", "standard");
+   System.out.println(analyze.convertToArray(res));
        results = repo.convertTo(response.hits().hits());
        return results;
 	}
@@ -75,30 +76,7 @@ public class ProductRepository {
 	}
 
 	
-	public AnalyzeResponse buildAnalyzer(String text) throws ElasticsearchException, IOException {
-		
-	  
-		
-		Function<Builder, ObjectBuilder<AnalyzeRequest>> fn = new Function<AnalyzeRequest.Builder, ObjectBuilder<AnalyzeRequest>>() {
-			
-			@Override
-			public ObjectBuilder<AnalyzeRequest> apply(Builder t) {
-				t.analyzer("standard")
-				//.field(fieldName)
-				.text(text);
-				return t;
-			}
-		};
-		
-		
-		AnalyzeRequest request = AnalyzeRequest.of(fn);
-		
-		 AnalyzeResponse response = esClient.indices().analyze(request);
-		 List<AnalyzeToken> tokens =response.tokens();
-		 AnalyzeDetail output = response.detail();
-		System.out.println("*************" + response.tokens().toString());
-		return response;
-	}
+	
 	
 	
 	
