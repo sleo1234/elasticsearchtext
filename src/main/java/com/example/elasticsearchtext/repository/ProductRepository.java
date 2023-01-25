@@ -46,9 +46,6 @@ public class ProductRepository {
 			    ),
 			    Product.class      
 			);
-	   
-	    
-	    
     
    AnalyzeResponse res = analyze.buildAnalyzer("The lazy foz bal bla bla", "standard");
    System.out.println(analyze.convertToArray(res));
@@ -78,7 +75,9 @@ public class ProductRepository {
 	
 	
 	
-	
+	public List<Product> getProds( String fieldName, String regex) throws ElasticsearchException, IOException{
+		return repo.regexQuery(fieldName, indexName, regex);
+	}
 	
 	
 	

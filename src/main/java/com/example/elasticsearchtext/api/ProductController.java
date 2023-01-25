@@ -1,4 +1,4 @@
-package com.example.elasticsearchtext.repository;
+package com.example.elasticsearchtext.api;
 
 import java.io.IOException;
 
@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.elasticsearchtext.DocumentField;
 import com.example.elasticsearchtext.Product;
+import com.example.elasticsearchtext.repository.ProductRepository;
 
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 
@@ -33,4 +35,13 @@ public class ProductController {
 		
 		return new ResponseEntity<>(repo.searchFor(fieldName, textValue), HttpStatus.FOUND);
 	}
+	
+	@PostMapping("/regex")
+	public ResponseEntity<Object> regexSearch(@RequestBody DocumentField document) throws ElasticsearchException, IOException{
+		DocumentField fields = new DocumentField(document.getFieldName(), document.getTextValue());
+		fields.setFieldName(document.getFieldName());
+		fields.setTextValue(document.getTextValue());
+		return new ResponseEntity<>(repo.getProds( fields.getFieldName(),fields.getTextValue()), HttpStatus.FOUND);
+	}
+	
 }

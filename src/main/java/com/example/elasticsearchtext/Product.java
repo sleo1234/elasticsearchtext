@@ -1,5 +1,8 @@
 package com.example.elasticsearchtext;
 
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -15,6 +18,7 @@ public class Product {
 	
 	
 	   @Field(type = FieldType.Text, name = "name")
+	   @Nullable
 	    private String name;
 
 	    @Field(type = FieldType.Text, name = "description")
